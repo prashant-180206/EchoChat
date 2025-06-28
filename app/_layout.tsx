@@ -8,7 +8,7 @@ export default function RootLayout() {
   return (
     <>
       <Stack initialRouteName="index">
-        <Stack.Screen name="(authscreens)"></Stack.Screen>
+        <Stack.Screen name="(auth)"></Stack.Screen>
         <Stack.Screen name="(tabs)"></Stack.Screen>
         <Stack.Screen
           name="index"
