@@ -3,9 +3,9 @@ module.exports = {
     DEFAULT: "#1a8cff",
     100: "#66b3ff",
     200: "#3b82f6",
-    dark: "#433235", // fallback for primary
-    "100-dark": "#3b3b4d", // choose good contrast shades
-    "200-dark": "#5c5c72",
+    dark: "#155d9c",
+    "100-dark": "#0f4c81",
+    "200-dark": "#0a3d62",
   },
   accent: {
     DEFAULT: "#22d3ee",
@@ -16,12 +16,12 @@ module.exports = {
     "200-dark": "#0e7490",
   },
   text: {
-    DEFAULT: "#1f2937", // Dark gray for main text (light mode)
-    100: "#4b5563", // Muted gray for secondary text
-    200: "#9ca3af", // Lighter gray for captions
-    dark: "#f9fafb", // Light gray for main text (dark mode)
-    "100-dark": "#d1d5db", // Muted light gray for secondary text
-    "200-dark": "#9ca3af", // Darker muted for captions in dark mode
+    DEFAULT: "#1f2937",
+    100: "#4b5563",
+    200: "#9ca3af",
+    dark: "#f9fafb",
+    "100-dark": "#d1d5db",
+    "200-dark": "#9ca3af",
   },
 
   border: {
