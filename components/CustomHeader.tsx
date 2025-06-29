@@ -1,12 +1,14 @@
 // CustomHeader.tsx
 
 import React from "react";
-import { View, Text, Platform, StatusBar, Pressable } from "react-native";
+import { Text, StatusBar, Pressable, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons"; // or your icon lib
 import ThemeClassWrapper from "@/hooks/Themewrapper";
+import { useRouter } from "expo-router";
 
-const CustomHeader = () => {
+const CustomHeader = ({ Title = "" }) => {
+  const router = useRouter();
   return (
     <ThemeClassWrapper>
       <SafeAreaView
@@ -18,9 +20,18 @@ const CustomHeader = () => {
           barStyle="light-content"
           backgroundColor="transparent"
         />
+        <TouchableOpacity
+          onPress={() => {
+            router.back();
+          }}
+        >
+          <Ionicons name="arrow-back" color={"white"} size={28}></Ionicons>
+        </TouchableOpacity>
 
         {/* Title */}
-        <Text className="text-text text-xl font-bold">EchoChat</Text>
+        <Text className="text-text text-xl font-bold">
+          {Title ? Title : "EchoChat"}
+        </Text>
 
         {/* Optional Action Icon */}
         <Pressable className="p-2">

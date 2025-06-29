@@ -35,7 +35,7 @@ module.exports = {
   bg: {
     DEFAULT: "#f5f8fb",
     100: "#ffffff",
-    200: "#1e1e2e",
+    200: "#dedede",
     dark: "#1e1e2e",
     "100-dark": "#2a2a3c",
     "200-dark": "#343447",

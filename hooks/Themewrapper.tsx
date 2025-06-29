@@ -35,7 +35,7 @@ export default function ThemeClassWrapper({
             .map((val) => {
               const match =
                 /^(bg|border|primary|secondary|accent|muted)$/.test(val) ||
-                /^(bg|border)-(primary|secondary|accent|muted)$/.test(val) ||
+                /^(bg|border)-(primary|secondary|accent|muted|bg)$/.test(val) ||
                 /^text-(primary|secondary|accent|muted|text|white|black|gray.*)$/.test(
                   val
                 ) ||

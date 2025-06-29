@@ -1,60 +1,37 @@
+import RouteButton from "@/components/libs/RouteButton";
 import ThemeClassWrapper from "@/hooks/Themewrapper";
-import { useColorScheme } from "nativewind";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
-// import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
+import { useRouter } from "expo-router";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 
 export default function Home() {
-  const { colorScheme, setColorScheme } = useColorScheme();
-
+  const router = useRouter();
   return (
     <ThemeClassWrapper>
-      <View className="flex-row flex-1">
-        <View className="flex-1 items-center justify-center bg-bg p-4">
-          <Text className="text-text mb-2">This should be text-text</Text>
-          <Text className="text-text-100 mb-2">
-            This should be text-text-100
-          </Text>
-          <Text className="text-text-200-dark mb-2">
-            This should be text-text-200
-          </Text>
+      <View className="flex-col flex-1 bg-bg items-center justify-center">
+        <Text className="text-primary-200 font-semibold text-3xl mb-4 bg">
+          Welcome to EchoChat !
+        </Text>
+        <Image
+          source={require("./../assets/images/LOGO_BG_TRANSPARENT.png")}
+          resizeMode="contain"
+          className="w-60 h-60 "
+        />
+        <Text className="text-2xl text-text my-4 font-semibold ">
+          Lets connect{" "}
+        </Text>
+        <Text className="text-text-100 font-semibold text-sm">
+          New To Echohat , Click Here to SignUp
+        </Text>
 
-          <View className="w-40 h-20 bg-secondary mb-2 items-center justify-center">
-            <Text className="text-white">bg-primary</Text>
-          </View>
-
-          <View className="w-40 h-20 bg-secondary-100 mb-2 items-center justify-center">
-            <Text className="text-white">bg-primary-100</Text>
-          </View>
-
-          <View className="w-40 h-20 bg-secondary-200 mb-2 items-center justify-center">
-            <Text className="text-white">bg-primary-200</Text>
-          </View>
-
-          <View className="w-40 h-20 bg-accent mb-2 items-center justify-center">
-            <Text className="text-white">bg-accent</Text>
-          </View>
-
-          <View className="w-40 h-20 bg-accent-100 mb-2 items-center justify-center">
-            <Text className="text-white">bg-accent-100</Text>
-          </View>
-
-          <View className="w-40 h-20 bg-accent-200 mb-2 items-center justify-center">
-            <Text className="text-white">bg-accent-200</Text>
-          </View>
-
-          <View className="w-40 h-20 border-4 border-border mb-2 items-center justify-center">
-            <Text className="text-white">border-border</Text>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              setColorScheme(colorScheme === "light" ? "dark" : "light");
-            }}
-            className="mt-4 bg-secondary p-2"
-          >
-            <Text className="text-white">Togglegf Theme</Text>
-          </TouchableOpacity>
-        </View>
+        <RouteButton path="./(auth)/signup" Name="SignUp" />
+        <Text className="text-text-100 font-semibold text-sm">
+          Already Have an Accont , Click here to Login
+        </Text>
+        <RouteButton
+          path="./(auth)/login"
+          Name="Login"
+          className="bg-secondary "
+        />
       </View>
     </ThemeClassWrapper>
   );

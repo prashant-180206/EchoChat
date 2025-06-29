@@ -1,20 +1,25 @@
 // app/_layout.tsx
 import "./global.css";
 
-import { Slot, Stack } from "expo-router";
-import CustomHeader from "@/components/CustomHeader";
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
     <>
       <Stack initialRouteName="index">
-        <Stack.Screen name="(auth)"></Stack.Screen>
-        <Stack.Screen name="(tabs)"></Stack.Screen>
+        <Stack.Screen
+          name="(auth)"
+          options={{ headerShown: false }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
+        ></Stack.Screen>
         <Stack.Screen
           name="index"
-          options={{
-            header: () => <CustomHeader />,
-          }}
+          options={{ headerShown: false }}
         ></Stack.Screen>
       </Stack>
     </>
