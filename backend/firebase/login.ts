@@ -4,7 +4,10 @@ import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Login and save credentials
-export const Login = async (email: string, password: string): Promise<boolean> => {
+export const Login = async (
+  email: string,
+  password: string
+): Promise<boolean> => {
   try {
     await signInWithEmailAndPassword(auth, email, password);
     await AsyncStorage.setItem(

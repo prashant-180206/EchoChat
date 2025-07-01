@@ -8,6 +8,9 @@ const Chats = () => {
       <Text>Chatj jjnnnjnnnin fnnfs</Text>
       <Link href={"/(tabs)/chats/chat"}>
         <Text>frg</Text>
+        <Link href={"/(tabs)/chats/chat"}>
+          <Text>go to chat</Text>
+        </Link>
       </Link>
     </View>
   );

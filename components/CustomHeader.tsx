@@ -12,7 +12,7 @@ const CustomHeader = ({ Title = "" }) => {
   return (
     <ThemeClassWrapper>
       <SafeAreaView
-        className=" w-full bg-primary flex-row items-center justify-between px-4 py-3 md:px-12 md:py-4 "
+        className="w-full bg-primary flex-row items-center justify-between px-4 py-3 md:px-12 md:py-4 min-h-[56px]" // <-- or h-14
         edges={["top"]}
       >
         <StatusBar

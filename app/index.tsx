@@ -1,10 +1,30 @@
+import { StartApp } from "@/backend/firebase/login";
+import LoadingModal from "@/components/libs/LoadingModal";
 import RouteButton from "@/components/libs/RouteButton";
 import ThemeClassWrapper from "@/hooks/Themewrapper";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 
 export default function Home() {
   const router = useRouter();
+  const [Loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const init = async () => {
+      const loggedIn = await StartApp();
+      if (loggedIn) {
+        router.replace("./(tabs)/chats/list");
+      }
+      setLoading(false);
+    };
+
+    init();
+  }, []);
+
+  if (Loading) {
+    return <LoadingModal visible={Loading} />;
+  }
   return (
     <ThemeClassWrapper>
       <View className="flex-col flex-1 bg-bg items-center justify-center">

@@ -5,8 +5,10 @@ import {
   useWindowDimensions,
   Text,
 } from "react-native";
-import { Tabs, Slot, useRouter, usePathname } from "expo-router";
+import { Tabs, Slot, useRouter, usePathname, Stack } from "expo-router";
 import { UserProvider } from "@/context/UserContext";
+import { Colors } from "@/assets/constant/color";
+import CustomTabbar from "@/components/CustomTabbar";
 
 const tabRoutes = [
   { name: "chats", title: "Chats", icon: "home" },
@@ -32,7 +34,7 @@ export default function TabLayout() {
               return (
                 <TouchableOpacity
                   key={tab.name}
-                  onPress={() => router.push(`/(tabs)/calls`)}
+                  onPress={() => router.push(`/(tabs)/${tab.name}` as any)}
                   className={`p-2 rounded-lg ${isActive ? "bg-blue-700" : ""}`}
                 >
                   <FontAwesome
@@ -57,9 +59,7 @@ export default function TabLayout() {
   return (
     <UserProvider>
       <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: "blue",
-        }}
+        tabBar={(props) => <CustomTabbar {...props} />}
         initialRouteName="chats"
       >
         {tabRoutes.map((tab) => (
@@ -67,10 +67,15 @@ export default function TabLayout() {
             key={tab.name}
             name={tab.name}
             options={{
-              title: tab.title,
-              tabBarIcon: ({ color }) => (
-                <FontAwesome name={tab.icon as any} size={24} color={color} />
-              ),
+              tabBarIcon: ({ focused }) => {
+                return (
+                  <FontAwesome
+                    name={tab.icon as any}
+                    size={30}
+                    color={focused ? Colors.bg.DEFAULT : Colors.bg[200]}
+                  ></FontAwesome>
+                );
+              },
             }}
           />
         ))}

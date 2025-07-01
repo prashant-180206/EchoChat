@@ -1,6 +1,6 @@
 import { View, useWindowDimensions } from "react-native";
 import { Redirect, Slot, Stack } from "expo-router";
-import IndexScreen from "./chatlist";
+import IndexScreen from "./list";
 
 export default function ChatsLayout() {
   const { width } = useWindowDimensions();
@@ -16,7 +16,7 @@ export default function ChatsLayout() {
         </View>
         <View style={{ flex: 1, borderLeftWidth: 1, borderColor: "#ccc" }}>
           <Redirect href={"/(tabs)/chats/chat"}></Redirect>
-          <Slot initialRouteName="chatlist" />
+          <Slot initialRouteName="list" />
         </View>
       </View>
     );
@@ -24,9 +24,17 @@ export default function ChatsLayout() {
 
   // 📱 Mobile fallback: just a regular stack
   return (
-    <Stack initialRouteName="chatlist">
-      <Stack.Screen name="chatlist" />
-      <Stack.Screen name="chat" />
+    <Stack initialRouteName="list">
+      <Stack.Screen name="list" />
+      <Stack.Screen
+        name="chat"
+        options={{
+          contentStyle: {
+            backgroundColor: "#fff",
+            height: "100%",
+          },
+        }}
+      />
     </Stack>
   );
 }
