@@ -5,7 +5,7 @@ export default function ChatLayout() {
   return (
     <Stack initialRouteName="index">
       <Stack.Screen name="index" />
-      <Stack.Screen name="[reciever]" />
+      <Stack.Screen name="[reciever]" options={{ headerShown: false }} />
     </Stack>
   );
 }

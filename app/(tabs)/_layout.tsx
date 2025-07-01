@@ -67,18 +67,28 @@ export default function TabLayout() {
             key={tab.name}
             name={tab.name}
             options={{
+              headerShown: false,
               tabBarIcon: ({ focused }) => {
                 return (
                   <FontAwesome
                     name={tab.icon as any}
                     size={30}
-                    color={focused ? Colors.bg.DEFAULT : Colors.bg[200]}
+                    color={
+                      focused ? Colors.primary.DEFAULT : Colors.primary[100]
+                    }
                   ></FontAwesome>
                 );
               },
             }}
           />
         ))}
+        <Tabs.Screen
+          name="add"
+          options={{
+            headerShown: false,
+            href: null,
+          }}
+        ></Tabs.Screen>
       </Tabs>
     </UserProvider>
   );

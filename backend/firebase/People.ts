@@ -69,13 +69,20 @@ export const Add_people = async (
       Sender: currentUser.Email,
       Status: "Read",
     }
-  ): people => ({
-    Email: other.Email,
-    Name: other.Name,
-    LastMsg: lastMessage,
-    profileUrl: other.ProfilePicUrl,
-    Read: "Read",
-  });
+  ): people => {
+    const person: people = {
+      Email: other.Email,
+      Name: other.Name,
+      LastMsg: lastMessage,
+      Read: "Read",
+    };
+
+    if (other.ProfilePicUrl) {
+      person.profileUrl = other.ProfilePicUrl;
+    }
+
+    return person;
+  };
 
   const toaddDocRef = doc(db, "USERS", toadd.Email);
   const currentUserDocRef = doc(db, "USERS", currentUser.Email);
@@ -105,7 +112,7 @@ export const Add_people = async (
     ]);
     return true;
   } catch (error) {
-    Alert.alert((error as Error).message);
+    Alert.alert("ftghjjnn", (error as Error).message);
     return false;
   }
 };

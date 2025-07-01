@@ -25,16 +25,13 @@ export default function ChatsLayout() {
   // 📱 Mobile fallback: just a regular stack
   return (
     <Stack initialRouteName="list">
-      <Stack.Screen name="list" />
       <Stack.Screen
-        name="chat"
+        name="list"
         options={{
-          contentStyle: {
-            backgroundColor: "#fff",
-            height: "100%",
-          },
+          headerShown: false,
         }}
       />
+      <Stack.Screen name="chat" options={{ headerShown: false }} />
     </Stack>
   );
 }

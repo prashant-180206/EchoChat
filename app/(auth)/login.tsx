@@ -45,7 +45,7 @@ const login = () => {
       return;
     }
     setLoading(false);
-    router.push("/(tabs)/chats/chatlist");
+    router.push("/(tabs)/chats/list");
   };
 
   return (

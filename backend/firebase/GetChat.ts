@@ -14,10 +14,16 @@ export const GetChats = async (
   DaysAgo: number = 0,
   onLiveUpdate?: (data: Conversation | null) => void
 ): Promise<{ data: Conversation | null; unsubscribe?: Unsubscribe }> => {
-  
   const senderEmail = auth.currentUser?.email;
+
+  console.log("🚩 [GetChats] Called with:", {
+    receiverEmail,
+    DaysAgo,
+    senderEmail,
+  });
+
   if (!senderEmail) {
-    console.warn("No authenticated user");
+    console.warn("🚫 [GetChats] No authenticated user");
     return { data: null };
   }
 
@@ -30,44 +36,72 @@ export const GetChats = async (
   const storageKey = `${receiverEmail}_${formattedDate}`;
   const docRef = doc(db, "CONVERSATIONS", convoId);
 
-  // Static past data
+  console.log("🗂️ [GetChats] Computed:", {
+    convoId,
+    formattedDate,
+    storageKey,
+  });
+
+  // 👉 If fetching static data for past days
   if (DaysAgo > 0) {
+    console.log("⏳ [GetChats] Past data mode. DaysAgo:", DaysAgo);
+
     const cached = await AsyncStorage.getItem(storageKey);
+    console.log("💾 [GetChats] AsyncStorage result:", cached);
+
     if (cached) {
       try {
-        return { data: JSON.parse(cached) as Conversation };
+        const parsed = JSON.parse(cached) as Conversation;
+        console.log("✅ [GetChats] Returning cached conversation:", parsed);
+        return { data: parsed };
       } catch (e) {
-        console.warn("Failed to parse cached chat", e);
+        console.warn("⚠️ [GetChats] Failed to parse cached chat:", e);
       }
     }
 
-    // Fallback: fetch from Firestore and store in AsyncStorage
+    console.log("🌐 [GetChats] Fetching from Firestore instead...");
     const docSnap = await getDoc(docRef);
+    console.log("📄 [GetChats] Firestore snapshot exists:", docSnap.exists());
 
     if (docSnap.exists()) {
       const convo = docSnap.data() as Conversation;
       await AsyncStorage.setItem(storageKey, JSON.stringify(convo));
+      console.log("✅ [GetChats] Returning Firestore conversation:", convo);
       return { data: convo };
+    } else {
+      console.log("🚫 [GetChats] Firestore doc does not exist");
+      return { data: null };
     }
-
-    return { data: null };
   }
 
-  // Live updates
+  // 👉 Real-time mode
+  console.log("🔴 [GetChats] Real-time updates mode");
+
   const unsubscribe = onSnapshot(docRef, async (docSnap) => {
+    console.log(
+      "📡 [GetChats] onSnapshot fired. Doc exists:",
+      docSnap.exists()
+    );
     if (docSnap.exists()) {
       const convo = docSnap.data() as Conversation;
+      console.log("📡 [GetChats] onSnapshot data:", convo);
       await AsyncStorage.setItem(storageKey, JSON.stringify(convo));
       onLiveUpdate?.(convo);
     } else {
+      console.log("📡 [GetChats] onSnapshot: doc does not exist");
       onLiveUpdate?.(null);
     }
   });
 
+  console.log("⚡ [GetChats] Getting initial snapshot...");
   const initialSnap = await getDoc(docRef);
+  console.log("⚡ [GetChats] Initial snapshot exists:", initialSnap.exists());
+
   const initialData = initialSnap.exists()
     ? (initialSnap.data() as Conversation)
     : null;
+
+  console.log("⚡ [GetChats] Initial data:", initialData);
 
   if (initialData) {
     const updatedMessages = initialData.Messages.map((msg) => ({
@@ -79,7 +113,10 @@ export const GetChats = async (
       (m, i) => m.Status !== initialData.Messages[i].Status
     );
 
+    console.log("🔍 [GetChats] Should update Statuses?", hasChanges);
+
     if (hasChanges) {
+      console.log("📝 [GetChats] Updating Statuses in Firestore...");
       await setDoc(docRef, {
         ...initialData,
         Messages: updatedMessages,
@@ -87,6 +124,7 @@ export const GetChats = async (
     }
   }
 
+  console.log("✅ [GetChats] Returning:", { data: initialData });
   return { data: initialData, unsubscribe };
 };
 

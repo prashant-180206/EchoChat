@@ -21,7 +21,7 @@ export const SendMessage = async (
   const docRef = doc(
     db,
     "CONVERSATIONS",
-    `${first}_${last}_${now.toLocaleDateString()}`
+    `${first}_${last}_${now.toISOString().split("T")[0]}`
   );
 
   const Msg: Message = {

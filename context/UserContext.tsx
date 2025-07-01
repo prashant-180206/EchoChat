@@ -25,10 +25,14 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let unsubscribeUser: (() => void) | undefined;
+
     const unsubscribeAuth = auth.onAuthStateChanged(async (firebaseUser) => {
       if (!firebaseUser?.email) {
         setUser(null);
         setLoading(false);
+
+        if (unsubscribeUser) unsubscribeUser();
         return;
       }
 
@@ -39,15 +43,16 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         }
       );
 
+      unsubscribeUser = unsubscribe;
+
       if (data) setUser(data);
 
       setLoading(false);
-
-      return unsubscribe;
     });
 
     return () => {
       unsubscribeAuth();
+      if (unsubscribeUser) unsubscribeUser();
     };
   }, []);
 

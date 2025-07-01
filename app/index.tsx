@@ -8,7 +8,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 
 export default function Home() {
   const router = useRouter();
-  const [Loading, setLoading] = useState(true);
+  const [Loading, setLoading] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -16,11 +16,14 @@ export default function Home() {
       if (loggedIn) {
         router.replace("./(tabs)/chats/list");
       }
+      // router.replace("./(tabs)/chats/list");
       setLoading(false);
     };
 
     init();
   }, []);
+
+  // router.replace("./(tabs)/chats/list");
 
   if (Loading) {
     return <LoadingModal visible={Loading} />;
@@ -52,6 +55,7 @@ export default function Home() {
           Name="Login"
           className="bg-secondary "
         />
+        <RouteButton path="./(tabs)/add" Name="Move to Tabs" />
       </View>
     </ThemeClassWrapper>
   );
