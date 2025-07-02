@@ -22,7 +22,7 @@ const recierverindex = () => {
     let unsubscribe: () => void;
 
     const getMessages = async () => {
-      // console.log("Started searching");
+      console.log("Started searching");
       const { data, unsubscribe: unsub } = await GetChats(
         reciever as string,
         0,
@@ -41,7 +41,7 @@ const recierverindex = () => {
     };
 
     getMessages();
-    // console.log("Ended searching");
+    console.log("Ended searching");
 
     return () => {
       if (unsubscribe) unsubscribe();
