@@ -16,7 +16,7 @@ export default function Home() {
       const success = await StartApp();
       console.log("[StartApp] Auto-login success:", success);
       if (success) {
-        router.replace("/(tabs)/chats/list");
+        router.replace("./(tabs)/chats/list");
       }
     };
 
@@ -32,6 +32,10 @@ export default function Home() {
   return (
     <ThemeClassWrapper>
       <View className="flex-col flex-1 bg-bg items-center justify-center">
+        <RouteButton
+          path="./(tabs)/chats/chat/test@5.in"
+          Name="Move"
+        ></RouteButton>
         <Text className="text-primary-200 font-semibold text-3xl mb-4 bg">
           Welcome to EchoChat !
         </Text>
