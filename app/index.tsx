@@ -8,19 +8,20 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 
 export default function Home() {
   const router = useRouter();
-  const [Loading, setLoading] = useState(false);
+  const [Loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const init = async () => {
-      const loggedIn = await StartApp();
-      if (loggedIn) {
-        router.replace("./(tabs)/chats/list");
+    const tryAutoLogin = async () => {
+      setLoading(true);
+      const success = await StartApp();
+      console.log("[StartApp] Auto-login success:", success);
+      if (success) {
+        router.replace("/(tabs)/chats/list");
       }
-      // router.replace("./(tabs)/chats/list");
-      setLoading(false);
     };
 
-    init();
+    tryAutoLogin();
+    setLoading(false);
   }, []);
 
   // router.replace("./(tabs)/chats/list");

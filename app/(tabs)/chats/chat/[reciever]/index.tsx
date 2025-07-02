@@ -8,6 +8,7 @@ import { GetChats } from "@/backend/firebase/GetChat";
 import { useLocalSearchParams } from "expo-router";
 import { SendMessage } from "@/backend/firebase/SendMsg";
 import { Conversation, Message } from "@/types/conversations";
+import { useUser } from "@/context/UserContext";
 
 const recierverindex = () => {
   const [Loading, setLoading] = useState(false);
@@ -15,30 +16,32 @@ const recierverindex = () => {
   const [Msg, setMsg] = useState("");
   const [Messages, setMessages] = useState<Conversation[]>([]);
 
+  const { user } = useUser();
+
   useEffect(() => {
     let unsubscribe: () => void;
 
     const getMessages = async () => {
-      console.log("Started searching");
+      // console.log("Started searching");
       const { data, unsubscribe: unsub } = await GetChats(
         reciever as string,
         0,
         (convo) => {
           if (convo === null) return;
-          setMessages((prev) => [...prev, convo]);
+          setMessages((prev) => [convo]);
         }
       );
       if (unsub) {
         unsubscribe = unsub;
       }
-      console.log("DAta ", data);
+      // console.log("DAta ", data);
       if (!data) return;
       setMessages([...Messages, data]);
-      console.log(...Messages);
+      // console.log(...Messages);
     };
 
     getMessages();
-    console.log("Ended searching");
+    // console.log("Ended searching");
 
     return () => {
       if (unsubscribe) unsubscribe();
@@ -50,16 +53,15 @@ const recierverindex = () => {
       <LoadingModal visible={Loading} />
       <View className="flex-1">
         {Messages.length !== 0 &&
-          Messages.map((convo, index) => {
-            const spreadmessages = convo.Messages.map((msg, index) => {
-              return (
-                <Text key={index}>
+          Messages.map((convo, convoIndex) => (
+            <React.Fragment key={convoIndex}>
+              {convo.Messages.map((msg, msgIndex) => (
+                <Text key={msgIndex}>
                   {msg.Content} - {msg.Status}
                 </Text>
-              );
-            });
-            return <>{spreadmessages.map((val, index) => val)}</>;
-          })}
+              ))}
+            </React.Fragment>
+          ))}
       </View>
       <View className="pb-4 bg-bg-200 flex-row items-center justify-between px-4">
         <View className="flex-[3]">
@@ -75,15 +77,16 @@ const recierverindex = () => {
         <TouchableOpacity
           className="flex-1 p-2 bg-primary-100 flex-row items-center justify-center rounded-full px-4 pl-4 mb-4 mx-2"
           onPress={async () => {
-            setLoading(true);
+            // setLoading(true);
             try {
-              await SendMessage(Msg, reciever as string);
+              await SendMessage(Msg, reciever as string, user);
               // Alert.alert("Message Sent");
             } catch (error) {
-              // Alert.alert("Message Not Sent");
+              Alert.alert("Message Not Sent");
+              // console.log((error as Error).message);
             }
             setMsg("");
-            setLoading(false);
+            // setLoading(false);
           }}
         >
           <Ionicons

@@ -7,7 +7,7 @@ import { Stack } from "expo-router";
 export default function RootLayout() {
   return (
     <>
-      <Stack initialRouteName="(tabs)">
+      <Stack initialRouteName="index">
         <Stack.Screen
           name="(auth)"
           options={{ headerShown: false }}
