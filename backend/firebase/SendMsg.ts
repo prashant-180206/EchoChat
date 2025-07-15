@@ -3,7 +3,6 @@ import { auth, db } from "./firebasestart";
 import { arrayUnion, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useUser } from "@/context/UserContext";
 import { people, UserStructure } from "@/types/user";
 
 export const SendMessage = async (
@@ -16,17 +15,33 @@ export const SendMessage = async (
   const senderEmail = auth.currentUser?.email;
 
   if (!senderEmail || user === null) {
-    // console.error("[SendMessage] User not logged in.");
     Alert.alert("User Not Logged In");
     return;
   }
 
   const [first, last] = [senderEmail, receiverEmail].sort();
-  const conversationID = `${first}_${last}_${now.toISOString().split("T")[0]}`;
-  const docRef = doc(db, "CONVERSATIONS", conversationID);
+  const conversationcollection = `${first}_${last}`;
+
+  // ✅ Format date for doc ID
+  const dateId = now.toISOString().split("T")[0];
+
+  // ✅ Use padded LOCAL time for message time
+  const paddedLocalTime = `${now.getHours().toString().padStart(2, "0")}:${now
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`;
+
+  const docRef = doc(
+    db,
+    "CONVERSATIONS",
+    conversationcollection,
+    "MESSAGES",
+    dateId
+  );
+
   const Msg: Message = {
     Content: message,
-    Time: now.toLocaleTimeString(),
+    Time: paddedLocalTime,
     Sender: senderEmail,
     Status: "Unread",
     ...(Links && { Links }),
@@ -36,7 +51,7 @@ export const SendMessage = async (
     participants: [senderEmail, receiverEmail],
     Messages: arrayUnion(Msg),
     LastMsg: Msg,
-    date: now.toLocaleDateString(),
+    date: now.toLocaleDateString(), // If you want this in local format too
   };
 
   // ✅ Update sender's ConnectedPeople
@@ -47,10 +62,8 @@ export const SendMessage = async (
     return val;
   });
 
-  // Write conversation doc
   await setDoc(docRef, conversationUpdate, { merge: true });
 
-  // Update sender user doc
   await updateDoc(doc(db, "USERS", user.Email), {
     ...user,
     ConnectedPeople: ConnectedUserArray,
@@ -75,7 +88,6 @@ export const SendMessage = async (
       ...receiverData,
       ConnectedPeople: updatedReceiverConnectedPeople,
     } satisfies UserStructure);
-  } else {
   }
 
   // ✅ Store lightweight local copy

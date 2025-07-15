@@ -1,8 +1,14 @@
 import {
+  collection,
   doc,
   getDoc,
+  getDocs,
+  limit,
   onSnapshot,
+  orderBy,
+  query,
   runTransaction,
+  startAfter,
   Unsubscribe,
 } from "firebase/firestore";
 import { auth, db } from "./firebasestart";
@@ -13,7 +19,7 @@ import { Alert } from "react-native";
 
 export const GetChats = async (
   receiverEmail: string,
-  DaysAgo: number = 0,
+  lastDate: string = "",
   onLiveUpdate?: (data: Conversation | null) => void
 ): Promise<{ data: Conversation | null; unsubscribe?: Unsubscribe }> => {
   const senderEmail = auth.currentUser?.email;
@@ -22,34 +28,70 @@ export const GetChats = async (
     return { data: null };
   }
 
-  const date = new Date();
-  date.setDate(date.getDate() - DaysAgo);
-  const formattedDate = date.toISOString().split("T")[0];
-  const [first, last] = [receiverEmail, senderEmail].sort();
-  const convoId = `${first}_${last}_${formattedDate}`;
-  const storageKey = `${receiverEmail}_${formattedDate}`;
-  const docRef = doc(db, "CONVERSATIONS", convoId);
+  const formattedDate = new Date().toISOString().split("T")[0];
 
-  if (DaysAgo > 0) {
+  const [first, last] = [receiverEmail, senderEmail].sort();
+  // const convoId = `${first}_${last}/${formattedDate}`;
+  let storageKey = `${receiverEmail}_${formattedDate}`;
+  const docRef = doc(
+    db,
+    "CONVERSATIONS",
+    `${first}_${last}`,
+    "MESSAGES",
+    formattedDate
+  );
+
+  if (lastDate !== "") {
+    const knownDatesKey = `knownDates_${first}_${last}`;
+    let storageKey = `${receiverEmail}_${lastDate}`;
+
+    // 1️⃣ Try cache first
     try {
       const cached = await AsyncStorage.getItem(storageKey);
       if (cached) {
         const parsed = JSON.parse(cached) as Conversation;
         return { data: parsed };
       }
-    } catch (err) {}
+    } catch (err) {
+      console.warn("AsyncStorage getItem error:", err);
+    }
 
+    // 2️⃣ If cache miss → Firestore query
     try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const convo = docSnap.data() as Conversation;
+      const q = query(
+        collection(db, "CONVERSATIONS", `${first}_${last}`, "MESSAGES"),
+        orderBy("uid", "desc"),
+        startAfter(lastDate),
+        limit(1)
+      );
+
+      const docSnap = await getDocs(q);
+      if (!docSnap.empty) {
+        const convoDoc = docSnap.docs[0];
+        const convo = convoDoc.data() as Conversation;
+
+        // Update correct storage key with new doc ID
+        storageKey = `${receiverEmail}_${convoDoc.id}`;
         await AsyncStorage.setItem(storageKey, JSON.stringify(convo));
+
+        // ✅ 3️⃣ Update local knownDates list
+        const knownDatesRaw = await AsyncStorage.getItem(knownDatesKey);
+        let knownDates: string[] = knownDatesRaw
+          ? JSON.parse(knownDatesRaw)
+          : [];
+
+        if (!knownDates.includes(convoDoc.id)) {
+          knownDates.push(convoDoc.id);
+          knownDates.sort().reverse(); // newest → oldest
+          await AsyncStorage.setItem(knownDatesKey, JSON.stringify(knownDates));
+        }
 
         return { data: convo };
       } else {
         return { data: null };
       }
     } catch (err) {
+      console.warn("Firestore query error:", err);
       return { data: null };
     }
   }

@@ -22,11 +22,15 @@ const SendMessageBar = ({
           value={value}
           onChangeText={onChangeText}
           showTitle={false}
-          className="my-0 border-0 bg-bg-100 py-3"
+          numberOfLines={5}
+          className="my-0 border-0 bg-bg-100 py-3 rounded-3xl"
         ></Input>
       </View>
 
-      <TouchableOpacity className="bg-primary-100 mb-4 rounded-full items-center justify-center px-6">
+      <TouchableOpacity
+        className="bg-primary-100 mb-4 rounded-full items-center justify-center px-6"
+        onPress={onPress}
+      >
         <Ionicons name="send" size={28} color={"black"} />
       </TouchableOpacity>
       <Text />

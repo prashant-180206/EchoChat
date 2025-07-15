@@ -6,7 +6,8 @@ export type people = {
   Name: string;
   LastMsg: Message;
   profileUrl?: string;
-  Read:"Read"|"Unread";
+  Read: "Read" | "Unread";
+  // LastModified: Timestamp;
 };
 
 export type UserStructure = {

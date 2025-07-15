@@ -18,12 +18,16 @@ const MessageShow = ({ message }: MessageShowProps) => {
       className={` mb-2 w-full flex-row ${!sent ? "justify-start" : "justify-end"} px-2`}
     >
       <View
-        className={`p-2 rounded-full flex-row ${!sent ? "bg-secondary-100" : "bg-primary-100"} max-w-[80%]`}
+        className={`p-2 rounded-3xl flex-row 
+          ${!sent ? "bg-secondary-100 rounded-bl-none" : "bg-primary-100 rounded-br-none"}
+           max-w-[80%]`}
       >
-        <Text className="px-4 text-text font-semibold pr-0 ">
-          {message.Content} jio5g ijtigjitj ijigj ij
+        <Text className="px-4 text-text font-semibold pr-0 max-w-[80%]">
+          {message.Content}
         </Text>
-        <Text className="text-sm px-2">{message.Time.slice(0, 5)}</Text>
+        <Text className="text-sm px-2">
+          {message.Time.split(":", 2).join(":")}
+        </Text>
         {sent && (
           <View>
             <FontAwesome

@@ -14,24 +14,18 @@ export default function Home() {
     const tryAutoLogin = async () => {
       setLoading(true);
       const success = await StartApp();
-      console.log("[StartApp] Auto-login success:", success);
       if (success) {
         router.replace("./(tabs)/chats/list");
       }
     };
-
     tryAutoLogin();
     setLoading(false);
   }, []);
 
-  // router.replace("./(tabs)/chats/list");
-
-  if (Loading) {
-    return <LoadingModal visible={Loading} />;
-  }
   return (
     <ThemeClassWrapper>
       <View className="flex-col flex-1 bg-bg items-center justify-center">
+        <LoadingModal visible={Loading} />
         <RouteButton
           path="./(tabs)/chats/chat/test@5.in"
           Name="Move"
